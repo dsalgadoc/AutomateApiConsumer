@@ -21,5 +21,5 @@ func GetDataRowClient(c configs.Client) (domain.DataRowClient, error) {
 }
 
 func buildEngineHttpClient(c configs.Client) (domain.DataRowClient, error) {
-	return infrastructure.NewEngineClient(c.Path), nil
+	return infrastructure.NewEngineClient(c.Path, c.Headers), nil
 }

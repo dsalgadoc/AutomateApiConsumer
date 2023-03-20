@@ -31,6 +31,7 @@ func (dp *DataProcessor) Do() {
 	if err != nil {
 		panic(fmt.Errorf("data inputter error: %w", err))
 	}
+	fmt.Printf("...Data read successfully from source. Has (%d) row(s)\n", len(data.Rows))
 
 	dataReturned := dp.getDataFromRegisteredClient(data)
 
@@ -38,6 +39,7 @@ func (dp *DataProcessor) Do() {
 	if err != nil {
 		panic(fmt.Errorf("data outputter error: %w", err))
 	}
+	fmt.Println("...Data was wrote successfully")
 }
 
 func (dp *DataProcessor) getDataFromRegisteredClient(data domain.Table) []domain.DataExchange {
@@ -50,6 +52,7 @@ func (dp *DataProcessor) getDataFromRegisteredClient(data domain.Table) []domain
 		}
 		dataReturned = append(dataReturned, rowProcessed)
 	}
+	fmt.Printf("...Data recovery successfully from client. Has (%d) row(s)\n", len(dataReturned))
 	return dataReturned
 }
 

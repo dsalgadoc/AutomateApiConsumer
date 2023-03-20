@@ -34,6 +34,9 @@ func main() {
 		panic(fmt.Errorf("invalid client, the valid types are %+v", ClientType))
 	}
 
+	fmt.Printf("...Running request from (%s), recovery data from (%s) and writing to (%s)\n",
+		client, inputter, outputter)
+
 	var app = application.BuildApplication(inputter, outputter, client)
 	app.DataProcessor.Do()
 }

@@ -22,8 +22,9 @@ type IO struct {
 }
 
 type Client struct {
-	Name string `yaml:"name"`
-	Path string `yaml:"path"`
+	Name    string            `yaml:"name"`
+	Path    string            `yaml:"path"`
+	Headers map[string]string `yaml:"headers"`
 }
 
 func LoadConfig(file string) (Config, error) {

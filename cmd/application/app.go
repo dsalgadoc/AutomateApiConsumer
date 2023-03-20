@@ -17,20 +17,25 @@ type (
 
 func BuildApplication(inputterType, outputterType, clientType string) *Application {
 	appConfig := getConfiguration()
+	fmt.Printf("...Configuration loaded %+v\n", appConfig)
+
 	inputter, err := buildInputter(inputterType)
 	if err != nil {
 		panic(fmt.Errorf("error building inputter: %w", err))
 	}
+	fmt.Println("...Inputter generated")
 
 	outputter, err := buildOutputter(outputterType)
 	if err != nil {
 		panic(fmt.Errorf("error building outputter: %w", err))
 	}
+	fmt.Println("...Outputter generated")
 
 	client, err := buildClients(clientType, appConfig)
 	if err != nil {
 		panic(fmt.Errorf("error building clients: %w", err))
 	}
+	fmt.Printf("...Client generated %+v\n", client)
 
 	return &Application{
 		DataProcessor: builders.BuildDataProcessor(appConfig, inputter, outputter, client),
@@ -38,7 +43,7 @@ func BuildApplication(inputterType, outputterType, clientType string) *Applicati
 }
 
 func getConfiguration() configs.Config {
-	appConfig, err := configs.LoadConfig("./api/configs/config.yaml")
+	appConfig, err := configs.LoadConfig("./configs/config.yaml")
 	if err != nil {
 		panic(fmt.Errorf("error getting configuration: %w", err))
 	}
