@@ -5,6 +5,8 @@ import (
 	"myApiController/configs"
 	"myApiController/domain"
 	infrastructure "myApiController/infrastructure/client"
+	"net/http"
+	"time"
 )
 
 var clients = map[string]func(c configs.Client) (domain.DataRowClient, error){
@@ -21,5 +23,8 @@ func GetDataRowClient(c configs.Client) (domain.DataRowClient, error) {
 }
 
 func buildEngineHttpClient(c configs.Client) (domain.DataRowClient, error) {
-	return infrastructure.NewEngineClient(c.Path, c.Headers), nil
+	httpClient := http.Client{
+		Timeout: time.Second * 1000,
+	}
+	return infrastructure.NewEngineClient(c.Path, c.Headers, httpClient), nil
 }

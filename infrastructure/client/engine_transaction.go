@@ -6,7 +6,6 @@ import (
 	"myApiController/domain"
 	"myApiController/domain/model"
 	"net/http"
-	"time"
 )
 
 type engineClient struct {
@@ -15,18 +14,16 @@ type engineClient struct {
 	headers    http.Header
 }
 
-func NewEngineClient(path string, headers map[string]string) domain.DataRowClient {
+func NewEngineClient(path string, headers map[string]string, httpClient http.Client) domain.DataRowClient {
 	header := http.Header{}
 	for key, value := range headers {
 		header.Add(key, value)
 	}
 
 	return &engineClient{
-		url: path,
-		HttpClient: &http.Client{
-			Timeout: time.Second * 1000,
-		},
-		headers: header,
+		url:        path,
+		HttpClient: &httpClient,
+		headers:    header,
 	}
 }
 
