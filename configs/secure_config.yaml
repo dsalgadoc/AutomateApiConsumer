@@ -1,6 +1,10 @@
-IO:
+io:
   location: <YOUR FOLDER HERE>
   file_name: <YOUR FILE HERE>
 clients:
   - name: api-engine
     path: <YOUR URL HERE>
+    headers:
+      <HEADER KEY>: <HEADER VALUE>
+      ...
+
