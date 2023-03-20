@@ -1,6 +1,7 @@
 .idea
 configs/config.yaml
 file_exchange
+test/output_*
 
 # Binaries for programs and plugins
 *.exe

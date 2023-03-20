@@ -84,3 +84,7 @@ func (rb *EngineRequestBuilder) PayMarketPlaceId(payMarketPlace string) *EngineR
 	rb.request.PayMarketPlaceId = payMarketPlace
 	return rb
 }
+
+func (rb *EngineRequestBuilder) Build() model.EngineRequest {
+	return rb.request
+}
