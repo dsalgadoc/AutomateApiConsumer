@@ -2,6 +2,7 @@ package application
 
 import (
 	"fmt"
+	"github.com/schollz/progressbar/v3"
 	"myApiController/configs"
 	"myApiController/domain"
 )
@@ -44,6 +45,7 @@ func (dp *DataProcessor) Do() {
 
 func (dp *DataProcessor) getDataFromRegisteredClient(data domain.Table) []domain.DataExchange {
 	dataReturned := []domain.DataExchange{}
+	progressBar := progressbar.Default(int64(len(data.Rows)))
 	for _, row := range data.Rows {
 		params := dp.rowToParams(data.Headers, row)
 		rowProcessed, err := dp.rowClient.DoRequest(params)
@@ -51,6 +53,7 @@ func (dp *DataProcessor) getDataFromRegisteredClient(data domain.Table) []domain
 			continue
 		}
 		dataReturned = append(dataReturned, rowProcessed)
+		progressBar.Add(1)
 	}
 	fmt.Printf("...Data recovery successfully from client. Has (%d) row(s)\n", len(dataReturned))
 	return dataReturned
