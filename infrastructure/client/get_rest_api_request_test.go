@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-type engineClientTestScenario struct {
+type getRestApiTestScenario struct {
 	test        *testing.T
 	client      domain.DataRowClient
 	mockClient  http.Client
@@ -23,7 +23,7 @@ type engineClientTestScenario struct {
 
 /*-- Test --*/
 func TestRequestOk(t *testing.T) {
-	s := startEngineClientTestScenario(t)
+	s := startGetRestApiTestScenario(t)
 	headers := map[string]string{"hello": "world"}
 	params := map[string]string{"lorem": "ipsum"}
 	s.givenAServerOk(headers)
@@ -33,7 +33,7 @@ func TestRequestOk(t *testing.T) {
 }
 
 func TestRequestWithBadResponse(t *testing.T) {
-	s := startEngineClientTestScenario(t)
+	s := startGetRestApiTestScenario(t)
 	headers := map[string]string{"hello": "world"}
 	params := map[string]string{"lorem": "ipsum"}
 	s.givenAServerBadResponse(headers)
@@ -44,7 +44,7 @@ func TestRequestWithBadResponse(t *testing.T) {
 }
 
 func TestErrorProcessingRequest(t *testing.T) {
-	s := startEngineClientTestScenario(t)
+	s := startGetRestApiTestScenario(t)
 	headers := map[string]string{"hello": "world"}
 	params := map[string]string{"lorem": "ipsum"}
 	s.givenAServerWithError(headers)
@@ -55,7 +55,7 @@ func TestErrorProcessingRequest(t *testing.T) {
 }
 
 func TestErrorEOFResponse(t *testing.T) {
-	s := startEngineClientTestScenario(t)
+	s := startGetRestApiTestScenario(t)
 	headers := map[string]string{"hello": "world"}
 	params := map[string]string{"lorem": "ipsum"}
 	s.givenAServerWithErrorResponseEOF(headers)
@@ -66,50 +66,50 @@ func TestErrorEOFResponse(t *testing.T) {
 }
 
 /*-- steps --*/
-func startEngineClientTestScenario(t *testing.T) *engineClientTestScenario {
+func startGetRestApiTestScenario(t *testing.T) *getRestApiTestScenario {
 	t.Parallel()
-	return &engineClientTestScenario{
+	return &getRestApiTestScenario{
 		test: t,
 	}
 }
 
-func (e *engineClientTestScenario) givenAServerOk(headers map[string]string) {
+func (e *getRestApiTestScenario) givenAServerOk(headers map[string]string) {
 	e.mockClient = http.Client{Transport: &mockClientOk{}}
-	e.client = NewEngineClient("http://test.com/GET", headers, e.mockClient)
+	e.client = NewGetRestApi("http://test.com/GET", headers, e.mockClient)
 }
 
-func (e *engineClientTestScenario) givenAServerBadResponse(headers map[string]string) {
+func (e *getRestApiTestScenario) givenAServerBadResponse(headers map[string]string) {
 	e.mockClient = http.Client{Transport: &mockClientBadResponse{}}
-	e.client = NewEngineClient("http://test.com/GET", headers, e.mockClient)
+	e.client = NewGetRestApi("http://test.com/GET", headers, e.mockClient)
 }
 
-func (e *engineClientTestScenario) givenAServerWithError(headers map[string]string) {
+func (e *getRestApiTestScenario) givenAServerWithError(headers map[string]string) {
 	e.mockClient = http.Client{Transport: &mockClientError{}}
-	e.client = NewEngineClient("http://test.com/GET", headers, e.mockClient)
+	e.client = NewGetRestApi("http://test.com/GET", headers, e.mockClient)
 }
 
-func (e *engineClientTestScenario) givenAServerWithErrorResponseEOF(headers map[string]string) {
+func (e *getRestApiTestScenario) givenAServerWithErrorResponseEOF(headers map[string]string) {
 	e.mockClient = http.Client{Transport: &mockClientResponseEOF{}}
-	e.client = NewEngineClient("http://test.com/GET", headers, e.mockClient)
+	e.client = NewGetRestApi("http://test.com/GET", headers, e.mockClient)
 }
 
-func (e *engineClientTestScenario) andSomeParams(params map[string]string) {
+func (e *getRestApiTestScenario) andSomeParams(params map[string]string) {
 	e.params = params
 }
 
-func (e *engineClientTestScenario) andAnExpectedError(err error) {
+func (e *getRestApiTestScenario) andAnExpectedError(err error) {
 	e.expectedErr = err
 }
 
-func (e *engineClientTestScenario) whenDoingRequest() {
+func (e *getRestApiTestScenario) whenDoingRequest() {
 	e.result, e.err = e.client.DoRequest(e.params)
 }
 
-func (e *engineClientTestScenario) thenThereIsNoError() {
+func (e *getRestApiTestScenario) thenThereIsNoError() {
 	assert.NoError(e.test, e.err)
 }
 
-func (e *engineClientTestScenario) thenThereIsAnError() {
+func (e *getRestApiTestScenario) thenThereIsAnError() {
 	assert.Error(e.test, e.err)
 	assert.Equal(e.test, e.expectedErr.Error(), e.err.Error())
 }

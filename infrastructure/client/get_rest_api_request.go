@@ -8,26 +8,26 @@ import (
 	"net/http"
 )
 
-type engineClient struct {
+type getRestApi struct {
 	url        string
 	HttpClient *http.Client
 	headers    http.Header
 }
 
-func NewEngineClient(path string, headers map[string]string, httpClient http.Client) domain.DataRowClient {
+func NewGetRestApi(path string, headers map[string]string, httpClient http.Client) domain.DataRowClient {
 	header := http.Header{}
 	for key, value := range headers {
 		header.Add(key, value)
 	}
 
-	return &engineClient{
+	return &getRestApi{
 		url:        path,
 		HttpClient: &httpClient,
 		headers:    header,
 	}
 }
 
-func (e *engineClient) DoRequest(params map[string]string) (domain.DataExchange, error) {
+func (e *getRestApi) DoRequest(params map[string]string) (domain.DataExchange, error) {
 	req, err := http.NewRequest(http.MethodGet, e.url, nil)
 	if err != nil {
 		return nil, err

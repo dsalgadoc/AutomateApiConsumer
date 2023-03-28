@@ -10,7 +10,7 @@ import (
 )
 
 var clients = map[string]func(c configs.Client) (domain.DataRowClient, error){
-	configs.Resource_GetRestApi: buildEngineHttpClient,
+	configs.Resource_GetRestApi: buildHttpGetRestClient,
 }
 
 func GetDataRowClient(c configs.Client) (domain.DataRowClient, error) {
@@ -22,9 +22,9 @@ func GetDataRowClient(c configs.Client) (domain.DataRowClient, error) {
 	return client(c)
 }
 
-func buildEngineHttpClient(c configs.Client) (domain.DataRowClient, error) {
+func buildHttpGetRestClient(c configs.Client) (domain.DataRowClient, error) {
 	httpClient := http.Client{
 		Timeout: time.Second * 1000,
 	}
-	return infrastructure.NewEngineClient(c.Path, c.Headers, httpClient), nil
+	return infrastructure.NewGetRestApi(c.Path, c.Headers, httpClient), nil
 }
