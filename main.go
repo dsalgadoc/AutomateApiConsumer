@@ -7,10 +7,9 @@ import (
 	"os"
 )
 
-// registered IO and client
+// registered
 var (
-	IOsType    = []string{configs.CsvIoType, configs.JsonIoType}
-	ClientType = []string{configs.EngineClientType}
+	IOsType = []string{configs.CsvIoType, configs.JsonIoType}
 )
 
 func main() {
@@ -30,13 +29,15 @@ func main() {
 	}
 
 	client := args[2]
-	if !application.CheckArgumentOnSlice(client, ClientType) {
-		panic(fmt.Errorf("invalid client, the valid types are %+v", ClientType))
+
+	var app = application.BuildApplication(inputter, outputter, client)
+
+	registeredClientsNames := app.AppConfig.GetRegisteredClientsNames()
+	if !application.CheckArgumentOnSlice(client, registeredClientsNames) {
+		panic(fmt.Errorf("invalid client, the valid types are %+v", registeredClientsNames))
 	}
 
 	fmt.Printf("...Running request from (%s), recovery data from (%s) and writing to (%s)\n",
 		client, inputter, outputter)
-
-	var app = application.BuildApplication(inputter, outputter, client)
 	app.DataProcessor.Do()
 }

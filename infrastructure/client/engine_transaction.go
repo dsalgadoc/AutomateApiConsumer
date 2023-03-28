@@ -40,22 +40,22 @@ func (e *engineClient) DoRequest(params map[string]string) (domain.DataExchange,
 	req.URL.RawQuery = query.Encode()
 	req.Header = e.headers
 
+	var response model.ApiResponse
 	resp, err := e.HttpClient.Do(req)
 	if err != nil {
-		return model.EngineResponse{}, err
+		return response, err
 	}
 	defer resp.Body.Close()
 
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return model.EngineRequest{}, err
+		return response, err
 	}
 
-	var engineResponse model.EngineResponse
-	err = json.Unmarshal(respBody, &engineResponse)
+	err = json.Unmarshal(respBody, &response)
 	if err != nil {
-		return engineResponse, err
+		return response, err
 	}
 
-	return engineResponse, nil
+	return response, nil
 }

@@ -10,11 +10,11 @@ import (
 )
 
 var clients = map[string]func(c configs.Client) (domain.DataRowClient, error){
-	configs.EngineClientType: buildEngineHttpClient,
+	configs.Resource_GetRestApi: buildEngineHttpClient,
 }
 
 func GetDataRowClient(c configs.Client) (domain.DataRowClient, error) {
-	client, exists := clients[c.Name]
+	client, exists := clients[c.Type]
 	if !exists {
 		return nil, fmt.Errorf("unable to build %s client", c.Name)
 	}

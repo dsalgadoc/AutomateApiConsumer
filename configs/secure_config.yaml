@@ -3,6 +3,7 @@ io:
   file_name: <YOUR FILE HERE>
 clients:
   - name: api-engine
+    type: <RESOURCE TYPE HERE SEE configs.go Resource_XXX constants>
     path: <YOUR URL HERE>
     headers:
       <HEADER KEY>: <HEADER VALUE>

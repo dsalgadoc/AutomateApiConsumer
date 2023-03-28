@@ -6,9 +6,9 @@ import (
 )
 
 const (
-	EngineClientType = "api-engine"
-	CsvIoType        = "csv"
-	JsonIoType       = "json"
+	Resource_GetRestApi = "GetRestApi"
+	CsvIoType           = "csv"
+	JsonIoType          = "json"
 )
 
 type Config struct {
@@ -23,6 +23,7 @@ type IO struct {
 
 type Client struct {
 	Name    string            `yaml:"name"`
+	Type    string            `yaml:"type"`
 	Path    string            `yaml:"path"`
 	Headers map[string]string `yaml:"headers"`
 }
@@ -40,4 +41,12 @@ func LoadConfig(file string) (Config, error) {
 	}
 
 	return config, nil
+}
+
+func (c *Config) GetRegisteredClientsNames() []string {
+	registeredClients := []string{}
+	for _, client := range c.Clients {
+		registeredClients = append(registeredClients, client.Name)
+	}
+	return registeredClients
 }

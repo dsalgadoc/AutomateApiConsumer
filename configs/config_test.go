@@ -7,11 +7,13 @@ import (
 )
 
 type configTestScenario struct {
-	test         *testing.T
-	fileLocation string
-	config       Config
-	err          error
-	expectedErr  error
+	test            *testing.T
+	fileLocation    string
+	config          Config
+	err             error
+	expectedErr     error
+	clients         []string
+	expectedClients []string
 }
 
 func TestLoadANoExistingConfig(t *testing.T) {
@@ -34,6 +36,7 @@ func TestLoadAConfig(t *testing.T) {
 	s.thenAssertClients([]Client{
 		{
 			Name:    "api-engine",
+			Type:    "<RESOURCE TYPE HERE SEE configs.go Resource_XXX constants>",
 			Path:    "<YOUR URL HERE>",
 			Headers: map[string]string{"<HEADER KEY>": "<HEADER VALUE>"},
 		},
@@ -41,6 +44,16 @@ func TestLoadAConfig(t *testing.T) {
 			Name: "no-existing-client",
 		},
 	})
+}
+
+func TestConfig_GetRegisteredClientsNames(t *testing.T) {
+	s := startConfigTestScenario(t)
+	s.givenAConfigFile("./secure_config.yaml")
+	s.andExpectedClients([]string{"api-engine", "no-existing-client"})
+	s.whenLoadingConfig()
+	s.andClientsAreRequired()
+	s.thenThereIsNoError()
+	s.thenAssertClientsNames()
 }
 
 func TestLoadInvalidConfigFile(t *testing.T) {
@@ -67,8 +80,16 @@ func (c *configTestScenario) andExpectedError(err error) {
 	c.expectedErr = err
 }
 
+func (c *configTestScenario) andExpectedClients(clients []string) {
+	c.expectedClients = clients
+}
+
 func (c *configTestScenario) whenLoadingConfig() {
 	c.config, c.err = LoadConfig(c.fileLocation)
+}
+
+func (c *configTestScenario) andClientsAreRequired() {
+	c.clients = c.config.GetRegisteredClientsNames()
 }
 
 func (c *configTestScenario) thenThereIsAnError() {
@@ -86,4 +107,8 @@ func (c *configTestScenario) thenAssertIO(expected IO) {
 
 func (c *configTestScenario) thenAssertClients(expected []Client) {
 	assert.Equal(c.test, expected, c.config.Clients)
+}
+
+func (c *configTestScenario) thenAssertClientsNames() {
+	assert.ElementsMatchf(c.test, c.expectedClients, c.clients, "")
 }

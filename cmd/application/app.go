@@ -12,6 +12,7 @@ import (
 type (
 	Application struct {
 		DataProcessor application.DataProcessor
+		AppConfig     configs.Config
 	}
 )
 
@@ -39,6 +40,7 @@ func BuildApplication(inputterType, outputterType, clientType string) *Applicati
 
 	return &Application{
 		DataProcessor: builders.BuildDataProcessor(appConfig, inputter, outputter, client),
+		AppConfig:     appConfig,
 	}
 }
 

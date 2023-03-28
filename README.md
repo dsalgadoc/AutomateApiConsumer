@@ -35,6 +35,7 @@ The config files the following structure
 |   io    |  file_name   | Input filename (without extension)                          | input                                            |
 |    -    |   clients    | Array with following elements, to describe each rest client | _Father node_                                    |
 | clients |     name     | Name to invoke the client                                   | api-shazam                                       |
+| clients |     type     | Resource type, see configs.go Resource_XXX constants        | GetRestApi                                       |
 | clients |     path     | HTTP URL for client (without parameters or headers)         | https://shazam.p.rapidapi.com/shazam-events/list |
 | clients |   headers    | Array with following elements, to describe each header      |                                                  |
 | header  | :HEADER KEY: | Header name : header value                                  | 'X-RapidAPI-Key': 'SIGN-UP-FOR-KEY'              |
