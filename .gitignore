@@ -2,6 +2,7 @@
 configs/config.yaml
 file_exchange
 test/output_*
+.DS_Store
 
 # Binaries for programs and plugins
 *.exe
