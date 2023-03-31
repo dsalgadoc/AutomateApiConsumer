@@ -3,6 +3,9 @@
 </h1>
 
 <p align="center">
+    <a href="#"><img src="https://img.shields.io/badge/technology-go-blue.svg" alt="Go"/></a>
+</p>
+<p align="center">
   This repository does various data retrievals for trusted sources automatically. It reads data from an input, makes a request, and records the result in a different file.
 </p>
 
