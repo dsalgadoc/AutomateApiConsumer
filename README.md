@@ -1,18 +1,18 @@
 <h1 align="center">
-  My API Consumer
+  🚀 🐹 My API Consumer
 </h1>
 
 <p align="center">
   This repository does various data retrievals for trusted sources automatically. It reads data from an input, makes a request, and records the result in a different file.
 </p>
 
-## Environment Setup
+## 🧲 Environment Setup
 
-### Needed tools
+### 🛠️ Needed tools
 
 1. Go 1.18 or higher
 
-### Application execution
+### 🏃🏻 Application execution
 
 1. Make sure to download all Needed tools
 2. Clone the repository
