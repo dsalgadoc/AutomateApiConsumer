@@ -36,15 +36,33 @@ The config files the following structure
 |    -    |   clients    | Array with following elements, to describe each rest client | _Father node_                                    |
 | clients |     name     | Name to invoke the client                                   | api-shazam                                       |
 | clients |     type     | Resource type, see configs.go Resource_XXX constants        | GetRestApi                                       |
-| clients |     path     | HTTP URL for client (without parameters or headers)         | https://shazam.p.rapidapi.com/shazam-events/list |
+| clients |     path     | HTTP URL for client (without headers) *                     | https://shazam.p.rapidapi.com/shazam-events/list |
 | clients |   headers    | Array with following elements, to describe each header      |                                                  |
 | header  | :HEADER KEY: | Header name : header value                                  | 'X-RapidAPI-Key': 'SIGN-UP-FOR-KEY'              |
 
-5. Run the API
+#### * Note about defining URIs:
+If your URL contains path parameters, you may specify them with their names within curly brackets in the clients[n].path property. _For instance_: http://example.com/movies/{movie_name}
+
+Make sure a column with these parameters exists in your input file. The next section contains further information on this input file.
+
+5. Create an input file, in **config.yaml** file, you specified the property io.file_name. This property is a file where you specific the input data to be processed.
+
+Csv files are one choice; the first row contains the name of each parameter, and each row contains one execution that defines all the parameters.
+
+Example:
+
+|  move_name   | year |  query  |
+|:------------:|:----:|:-------:|
+|    split     | 2016 | casting |
+|  Inception   | 2010 | rating  |
+
+The .csv file columns can be used like path parameters, query variables or both.
+
+6. Run the API
 ```
   go run main.go
 ```
-6. You'll see various errors since not enough parameters were provided; the correct form is as follows.
+7. You'll see various errors since not enough parameters were provided; the correct form is as follows.
 ```
   go run main.go <INPUT FILE TYPE> <OUTPUT FILE TYPE> <DATA SOURCE>
 ```
