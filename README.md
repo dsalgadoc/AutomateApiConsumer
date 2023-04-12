@@ -19,12 +19,13 @@
 
 1. Make sure to download all Needed tools
 2. Clone the repository
-```
-  git clone https://github.com/dasalgadoc/MyApiConsumer.git
+```bash
+git clone https://github.com/dasalgadoc/MyApiConsumer.git
 ```
 3. Build up go project
-```
-  go get .
+```bash
+go mod download
+go get .
 ```
 4. Make a **config.yaml** file in **./configs**
 In **./configs/secure_config.yaml** has an example. Setup the data source clients and provide the location and name of input data.
@@ -38,7 +39,7 @@ The config files the following structure
 |   io    |  file_name   | Input filename (without extension)                          | input                                            |
 |    -    |   clients    | Array with following elements, to describe each rest client | _Father node_                                    |
 | clients |     name     | Name to invoke the client                                   | api-shazam                                       |
-| clients |     type     | Resource type, see configs.go Resource_XXX constants        | GetRestApi                                       |
+| clients |     type     | Resource type, see configs.go Resource_XXX constants        | GetRestApi / PostRestApi                         |
 | clients |     path     | HTTP URL for client (without headers) *                     | https://shazam.p.rapidapi.com/shazam-events/list |
 | clients |   headers    | Array with following elements, to describe each header      |                                                  |
 | header  | :HEADER KEY: | Header name : header value                                  | 'X-RapidAPI-Key': 'SIGN-UP-FOR-KEY'              |
@@ -61,15 +62,27 @@ Example:
 
 The .csv file columns can be used like path parameters, query variables or both.
 
+#### Json Body
+You can use the first column on the input file to specify a JSON BODY. Just call the header as __"JSON_BODY"__ and each row the json in string format.
+
+Example:
+
+|    JSON_BODY    |  move_name  | year |  query  |
+|:---------------:|:-----------:|:----:|:-------:|
+| {"key":"value"} |    split    | 2016 | casting |
+| {"key":"value"} |  Inception  | 2010 | rating  |
+
+In this case, the first column will be treated like a Body in JSON format and no like a parameter. 
+
 6. Run the API
-```
-  go run main.go
+```bash
+go run main.go
 ```
 7. You'll see various errors since not enough parameters were provided; the correct form is as follows.
-```
-  go run main.go <INPUT FILE TYPE> <OUTPUT FILE TYPE> <DATA SOURCE>
+```bash
+go run main.go <INPUT FILE TYPE> <OUTPUT FILE TYPE> <DATA SOURCE>
 ```
 For instance:
-```
-  go run main.go csv json api-engine 
+```bash
+go run main.go csv json api-engine 
 ```

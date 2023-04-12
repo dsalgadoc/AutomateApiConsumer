@@ -10,6 +10,14 @@ import (
 	"testing"
 )
 
+var (
+	headersWithoutJson = []string{"one", "two", "three"}
+	rowsWithoutJson    = [][]string{{"1", "2", "3"}}
+
+	headersWithJson = []string{"JSON_BODY", "one", "two", "three"}
+	rowsWithJson    = [][]string{{`{"hello":"world"}`, "1", "2", "3"}}
+)
+
 type dataProcessorTestScenario struct {
 	test          *testing.T
 	function      func()
@@ -22,7 +30,17 @@ type dataProcessorTestScenario struct {
 func TestDataProcessorOK(t *testing.T) {
 	s := startDataProcessorTestScenario(t)
 	s.givenAConfig()
-	s.andInputterIsOk()
+	s.andInputterIsOk(headersWithoutJson, rowsWithoutJson)
+	s.andDataRowClientIsOk()
+	s.andOutputterIsOk()
+	s.whenDoingDataProcessor()
+	s.thenThereIsNoPanics()
+}
+
+func TestDataProcessorWithBodyOk(t *testing.T) {
+	s := startDataProcessorTestScenario(t)
+	s.givenAConfigWithJsonBody()
+	s.andInputterIsOk(headersWithJson, rowsWithJson)
 	s.andDataRowClientIsOk()
 	s.andOutputterIsOk()
 	s.whenDoingDataProcessor()
@@ -40,7 +58,7 @@ func TestDataProcessorInputterFails(t *testing.T) {
 func TestDataProcessorClientFails(t *testing.T) {
 	s := startDataProcessorTestScenario(t)
 	s.givenAConfig()
-	s.andInputterIsOk()
+	s.andInputterIsOk(headersWithoutJson, rowsWithoutJson)
 	s.andDataRowClientFailed()
 	s.andOutputterIsOk()
 	s.whenDoingDataProcessor()
@@ -50,7 +68,7 @@ func TestDataProcessorClientFails(t *testing.T) {
 func TestDataProcessorOutputterFails(t *testing.T) {
 	s := startDataProcessorTestScenario(t)
 	s.givenAConfig()
-	s.andInputterIsOk()
+	s.andInputterIsOk(headersWithoutJson, rowsWithoutJson)
 	s.andDataRowClientIsOk()
 	s.andOutputterFailed()
 	s.whenDoingDataProcessor()
@@ -74,13 +92,22 @@ func (d *dataProcessorTestScenario) givenAConfig() {
 	}
 }
 
-func (d *dataProcessorTestScenario) andInputterIsOk() {
+func (d *dataProcessorTestScenario) givenAConfigWithJsonBody() {
+	d.configMock = configs.Config{
+		IO: configs.IO{
+			FolderLocation: "../test/",
+			InputFileName:  "headers_with_json_body",
+		},
+	}
+}
+
+func (d *dataProcessorTestScenario) andInputterIsOk(headers []string, rows [][]string) {
 	d.inputterMock.On("InputterExtension").Return(".csv")
 	d.inputterMock.On("Invoke", mock.Anything).
 		Return(
 			domain.Table{
-				Headers: []string{"one", "two", "three"},
-				Rows:    [][]string{{"1", "2", "3"}},
+				Headers: headers,
+				Rows:    rows,
 			}, nil)
 }
 
@@ -91,12 +118,12 @@ func (d *dataProcessorTestScenario) andInputterFailed() {
 }
 
 func (d *dataProcessorTestScenario) andDataRowClientIsOk() {
-	d.rowClientMock.On("DoRequest", mock.Anything).
+	d.rowClientMock.On("DoRequest", mock.Anything, mock.Anything).
 		Return("something", nil)
 }
 
 func (d *dataProcessorTestScenario) andDataRowClientFailed() {
-	d.rowClientMock.On("DoRequest", mock.Anything).
+	d.rowClientMock.On("DoRequest", mock.Anything, mock.Anything).
 		Return("", fmt.Errorf("something went wrong"))
 }
 

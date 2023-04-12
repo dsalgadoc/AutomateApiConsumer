@@ -47,8 +47,12 @@ func (dp *DataProcessor) getDataFromRegisteredClient(data domain.Table) []domain
 	dataReturned := []domain.DataExchange{}
 	progressBar := progressbar.Default(int64(len(data.Rows)))
 	for _, row := range data.Rows {
+		var jsonBody string
+		if data.Headers[0] == "JSON_BODY" {
+			jsonBody = row[0]
+		}
 		params := dp.rowToParams(data.Headers, row)
-		rowProcessed, err := dp.rowClient.DoRequest(params)
+		rowProcessed, err := dp.rowClient.DoRequest(params, jsonBody)
 		if err != nil {
 			continue
 		}
@@ -62,6 +66,9 @@ func (dp *DataProcessor) getDataFromRegisteredClient(data domain.Table) []domain
 func (dp *DataProcessor) rowToParams(headers []string, row []string) map[string]string {
 	params := make(map[string]string)
 	for i, cell := range row {
+		if headers[i] == "JSON_BODY" {
+			continue
+		}
 		params[headers[i]] = cell
 	}
 	return params

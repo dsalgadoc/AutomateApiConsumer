@@ -1,6 +1,7 @@
 package client
 
 import (
+	"bytes"
 	"encoding/json"
 	"io"
 	"myApiController/domain"
@@ -11,28 +12,41 @@ import (
 
 const INNER_VARAIBLE = `\{(\w+)\}`
 
-type getRestApi struct {
+type RestApi struct {
 	url        string
 	HttpClient *http.Client
 	headers    http.Header
+	httpMethod string
 }
 
-func NewGetRestApi(path string, headers map[string]string, httpClient http.Client) domain.DataRowClient {
+func NewRestApi(path, httpMethod string, headers map[string]string, httpClient http.Client) domain.DataRowClient {
 	header := http.Header{}
 	for key, value := range headers {
 		header.Add(key, value)
 	}
 
-	return &getRestApi{
+	return &RestApi{
 		url:        path,
 		HttpClient: &httpClient,
 		headers:    header,
+		httpMethod: httpMethod,
 	}
 }
 
-func (e *getRestApi) DoRequest(params map[string]string) (domain.DataExchange, error) {
+func (e *RestApi) DoRequest(params map[string]string, bodyStr string) (domain.DataExchange, error) {
+	var (
+		err error
+		req *http.Request
+	)
+
 	path := e.generatePath(params)
-	req, err := http.NewRequest(http.MethodGet, path, nil)
+	if bodyStr == "" {
+		req, err = http.NewRequest(e.httpMethod, path, nil)
+	} else {
+		body := bytes.NewBuffer([]byte(bodyStr))
+		req, err = http.NewRequest(e.httpMethod, path, body)
+	}
+
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +78,7 @@ func (e *getRestApi) DoRequest(params map[string]string) (domain.DataExchange, e
 	return response, nil
 }
 
-func (e *getRestApi) generatePath(params map[string]string) string {
+func (e *RestApi) generatePath(params map[string]string) string {
 	re := regexp.MustCompile(INNER_VARAIBLE)
 	if !re.MatchString(e.url) {
 		return e.url
