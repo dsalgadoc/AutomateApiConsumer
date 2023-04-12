@@ -20,7 +20,7 @@
 1. Make sure to download all Needed tools
 2. Clone the repository
 ```bash
-git clone https://github.com/dasalgadoc/MyApiConsumer.git
+git clone https://github.com/dsalgadoc/AutomateApiConsumer.git
 ```
 3. Build up go project
 ```bash
